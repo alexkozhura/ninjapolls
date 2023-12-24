@@ -1,9 +1,22 @@
 <script>
+	import Header from './components/Header.svelte';
+	import Footer from './components/Footer.svelte';
+
+	// tabs
+	let items = ['Current Polls', 'Add New Poll'];
+	// also need to say which of them are going to be active
+	let activeItem = 'Current Polls';
 </script>
 
+<Header />
 <main>
-</main>
-	<h1>Hello, Ninjas</h1>
-<style>
 	
+</main>
+<Footer />
+
+<style>
+	main {
+		max-width: 960px;
+		margin: 40px auto;
+	}
 </style>
