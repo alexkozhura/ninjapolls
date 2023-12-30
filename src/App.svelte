@@ -36,7 +36,8 @@
 
   const handleVote = (e) => {
 	const { option, id } = e.detail;
-
+	
+	// we create a copy of the polls array here so that we don't cause refresh right away
 	let copiedPolls = [...polls];
 	let upvotedPoll = copiedPolls.find((poll) => poll.id == id);
 
