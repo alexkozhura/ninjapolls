@@ -1,4 +1,5 @@
 <script>
+    import PollStore from "../stores/PollStore.js";
     import { createEventDispatcher } from "svelte";
     import Button from "../shared/Button.svelte"
 
@@ -7,7 +8,7 @@
     let errors = { question: '', answerA: '', answerB: '' };
     let valid = false;
 
-    const submitHander = () => {
+    const submitHandler = () => {
         // to reset the 'valid' value after displaying all the errors
         valid = true;
         // Validate question
@@ -35,12 +36,16 @@
         // add new poll
         if (valid) {
             let poll = {...fields, votesA: 0, votesB: 0, id: Math.random()};
-            dispatch('add', poll);
+            // save poll to store
+            PollStore.update(currentPolls => {
+                return [poll, ...currentPolls]
+            })
+            dispatch('add');
         }
     }
 </script>
 
-<form on:submit|preventDefault={submitHander}>
+<form on:submit|preventDefault={submitHandler}>
     <div class="form-field">
         <label for="question">Poll Question:</label>
         <input type="text" id="question" bind:value={fields.question}>

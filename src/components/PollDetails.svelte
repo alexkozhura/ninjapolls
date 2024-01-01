@@ -1,8 +1,9 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    import PollStore from "../stores/PollStore";
     import Card from "../shared/Card.svelte";
+    import Button from "../shared/Button.svelte";
+
     export let poll;
-    const dispatch = createEventDispatcher();
 
     // reactive values
     $: totalVotes = poll.votesA + poll.votesB;
@@ -11,8 +12,27 @@
 
     // handling votes
     const handleVote = (option, id) => {
-        dispatch('vote', { option, id })
-    }
+        PollStore.update((currentPolls) => {
+            // we create a copy of the polls array here so that we don't cause refresh right away
+            let copiedPolls = [...currentPolls];
+            let upvotedPoll = copiedPolls.find((poll) => poll.id == id);
+
+            if (option === 'a') {
+                upvotedPoll.votesA++;
+            }
+            if (option === 'b') {
+                upvotedPoll.votesB++;
+            }
+
+            return copiedPolls;
+        });
+    };
+    // deleting a poll
+    const handleDelete = (id) => {
+        PollStore.update(currentPolls => {
+            return currentPolls.filter(poll => poll.id != id);
+        });
+    };
 </script>
 
 <Card>
@@ -26,6 +46,9 @@
         <div class="answer" on:click={() => handleVote('b', poll.id)}>
             <div class="percent percent-b" style="width: {percentB}%"></div>
             <span>{ poll.answerB } ({ poll.votesB })</span>
+        </div>
+        <div class="delete">
+            <Button flat={true} on:click={() => handleDelete(poll.id)}>Delete</Button>
         </div>
     </div>
 </Card>
@@ -67,5 +90,9 @@
     .percent-b {
         border-left: 4px solid #45c496;
         background: rgba(69,196,150,0.2);
+    }
+    .delete {
+        margin-top: 30px;
+        text-align: center;
     }
 </style>
